@@ -79,6 +79,11 @@ class GameTests(unittest.TestCase):
             self.game.roll(1)
         self.assertEqual(self.game.score, 20)
 
+    def test_game_finishes(self):
+        for i in xrange(20):
+            self.game.roll(0)
+        self.assertRaises(RuntimeError, self.game.roll, 0)
+
     # def test_a_strike(self):
     #     self.game.roll(10)
     #     self.game.roll(1)
