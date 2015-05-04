@@ -1,13 +1,18 @@
 import random
 
 class Game(object):
+    def __init__(self):
+        self._score = 0
+
     # Requirements from Bob
     def roll(self, pins):
-        raise NotImplementedError()
+        if pins < 0 or pins > 10:
+            raise Exception('Pins must be between 1 and 10')
+        self._score += pins
 
     @property
     def score(self):
-        raise NotImplementedError()
+        return self._score
 
     # Things that would be really useful
     @property
