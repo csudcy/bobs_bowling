@@ -13,5 +13,5 @@ Learnings:
 ** Game is too big for 30 minutes; concentrate on Frame first next time
 * V2:
 ** Starting with Frame was much better
-** I don't like max_rolls being pass in to score
+** I don't like max_rolls being passed in to score
 ** Might have written too many params (18) for `test_score_with_next_frame`
