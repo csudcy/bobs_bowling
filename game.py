@@ -4,7 +4,8 @@ import random
 class Frame(object):
     def __init__(self):
         self._pins_remaining = 10
-        self._rolls_remaining = 2
+        self._rolls_total = 2
+        self._rolls_remaining = self._rolls_total
         self._rolls = []
 
     def roll(self, pins):
@@ -99,15 +100,67 @@ class Game(object):
 
 
 if __name__ == '__main__':
+
+    def format_game(game):
+        def format_frame(frame, running_score):
+            """
+            *******
+            * 1 / *
+            * 300 *
+            *******
+            """
+            w = frame._rolls_total * 2 + 3
+
+            # Generate the rolls portion
+            rolls = []
+            score = 0
+            for roll in frame._rolls:
+                if roll == 10:
+                    rolls.append('X')
+                else:
+                    score += roll
+                    if score == 10:
+                        rolls.append('/')
+                    else:
+                        rolls.append(str(roll))
+            while len(rolls) < frame._rolls_total:
+                rolls.append(' ')
+
+            # Generate the total portion
+            if frame.finished:
+                total_score = str(running_score)
+            else:
+                total_score = ''
+            while len(total_score) < w-4:
+                total_score = ' ' + total_score
+
+            # Return everything
+            return [
+                '*'*w,
+                '* %s *' % ' '.join(rolls),
+                '*%s*' % ('-'*(w-2)),
+                '* %s *' % total_score,
+                '*'*w,
+            ]
+
+        output = ['', '', '', '', '']
+        running_score = 0
+        for i in xrange(len(game._frames)):
+            frame = game._frames[i]
+            if i+1 < len(game._frames):
+                next_frame = game._frames[i+1]
+            else:
+                next_frame = None
+            running_score += frame.score(next_frame)
+            frame_output = format_frame(frame, running_score)
+            for i in xrange(len(frame_output)):
+                output[i] += frame_output[i]
+        return '\n'.join(output)
+
     game = Game()
     while (True):
-        print '{score} @ frame {frame} ({pins_remaining} pins remaining)'.format(
-            frame=game.frame,
-            score=game.score,
-            pins_remaining=game.pins_remaining,
-        )
+        print format_game(game)
+        print
         if game.finished:
             break
-        roll = random.randint(0, game.pins_remaining)
-        print 'Rolling {roll}'.format(roll=roll)
-        game.roll(roll)
+        game.roll(random.randint(0, game.pins_remaining))
